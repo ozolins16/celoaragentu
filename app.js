@@ -1,6 +1,6 @@
 document.getElementById('testApiButton').addEventListener('click', function() {
     // Set up the URL for the API request
-    const apiUrl = "https://ozolins16.github.io/celoaragentu/export/default.php";
+    const apiUrl = "https://ozolins16.github.io/celoaragentu/export/default.php?samo_action=api&version=1.0";
     const params = new URLSearchParams({
         samo_action: 'api',
         version: '1.0',
@@ -22,7 +22,7 @@ function handleApiResponse(data) {
     responseDiv.classList.remove('error');  // Remove error class
     responseDiv.innerHTML = "<h2>API Response:</h2>";
 
-    // Check if the response is an object and display it
+    // Check if the response contains the data we expect
     if (data && data.SearchTour_TOWNFROMS && Array.isArray(data.SearchTour_TOWNFROMS)) {
         responseDiv.innerHTML += "<ul>" + data.SearchTour_TOWNFROMS.map(item => {
             return `<li>Tour ID: ${item.id}, Name: ${item.name}</li>`;
