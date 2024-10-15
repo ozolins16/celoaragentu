@@ -1,16 +1,16 @@
 document.getElementById('testApiButton').addEventListener('click', function() {
-    // Set up the URL for the API request
+    // The full URL with samo_action and version already included
     const apiUrl = "https://ozolins16.github.io/celoaragentu/export/default.php?samo_action=api&version=1.0";
+    
+    // Add the required query parameters (oauth_token, type, action)
     const params = new URLSearchParams({
-        samo_action: 'api',
-        version: '1.0',
         oauth_token: '450c0605a2824ed7be80329b04f9716e',  // Replace with your actual oauth token
         type: 'json',  // Use 'json' to get the response in JSON format
         action: 'SearchTour_TOWNFROMS'  // This is the action you're calling in the API
     });
 
     // Send the GET request using fetch
-    fetch(apiUrl + '?' + params.toString())
+    fetch(apiUrl + '&' + params.toString())  // Append the parameters to the URL
         .then(response => response.json())  // Parse the response as JSON
         .then(data => handleApiResponse(data))  // Handle the successful response
         .catch(error => handleApiError(error));  // Handle any errors
