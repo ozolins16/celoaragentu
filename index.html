@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel API Test Site</title>
-    <script defer src="app.js"></script> <!-- Link to your JavaScript -->
+    <title>Celoar Agentu API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+        }
+        #response.error {
+            background-color: #ffdddd;
+            color: red;
+        }
+    </style>
 </head>
 <body>
-    <h1>Test API for Travel Search</h1>
-    
-    <form id="searchForm">
-        <label for="destination">Destination:</label>
-        <input type="text" id="destination" name="destination" >
-        
-        <label for="date">Travel Date:</label>
-        <input type="date" id="date" name="date" >
-        
-        <button type="submit">Search</button>
-    </form>
+    <h1>Test API Integration</h1>
+    <button id="testApiButton">Test API</button>
+    <div id="response"></div>
 
-    <div id="results"></div> <!-- Where results will be shown -->
+    <script src="app.js">
+    </script>
 </body>
 </html>
