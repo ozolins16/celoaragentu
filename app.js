@@ -10,11 +10,26 @@ document.getElementById('testApiButton').addEventListener('click', function() {
     });
 
     // Send the GET request using fetch
-    fetch(apiUrl + '&' + params.toString())  // Append the parameters to the URL
-        .then(response => response.json())  // Parse the response as JSON
-        .then(data => handleApiResponse(data))  // Handle the successful response
-        .catch(error => handleApiError(error));  // Handle any errors
-});
+//     fetch(apiUrl + '&' + params.toString())  // Append the parameters to the URL
+//         .then(response => response.json())  // Parse the response as JSON
+//         .then(data => handleApiResponse(data))  // Handle the successful response
+//         .catch(error => handleApiError(error));  // Handle any errors
+// });
+
+fetch(apiUrl + '&' + params.toString())
+    .then(response => response.text())  // Use text() to get the raw response as a string
+    .then(data => {
+        console.log(data);  // Log the raw response
+        try {
+            // Attempt to parse JSON manually
+            const jsonData = JSON.parse(data);
+            handleApiResponse(jsonData);
+        } catch (error) {
+            handleApiError(error);
+        }
+    })
+    .catch(error => handleApiError(error));
+
 
 // Function to handle the response when it's successful
 function handleApiResponse(data) {
