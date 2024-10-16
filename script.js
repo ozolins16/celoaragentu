@@ -4,7 +4,7 @@
 
 //   try {
 //     // Make a fetch request to the server-side API (fetch-hotels.js)
-//     const response = await fetch(`/api/fetch-hotels?location=${location}`);
+//     const response = await fetch(`/api/fetch-hotels?countryCode[]=${location}`);
 
 //     if (!response.ok) {
 //       throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
@@ -19,17 +19,27 @@
 //   }
 // });
 
-document.getElementById('search').addEventListener('click', async () => {
-  const location = document.getElementById('location').value;
+// document.getElementById('search').addEventListener('click', async () => {
+//   const location = document.getElementById('location').value;
 
-  try {
-    const response = await fetch(`/api/fetch-hotels?location=${location}`);
-    const data = await response.json();
+//   try {
+//     const response = await fetch(`/api/fetch-hotels?location=${location}`);
+//     const data = await response.json();
 
-    // Display the raw data to inspect
-    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-  } catch (error) {
-    document.getElementById('output').textContent = 'Error fetching hotels: ' + error.message;
-  }
-});
+//     // Display the raw data to inspect
+//     document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+//   } catch (error) {
+//     document.getElementById('output').textContent = 'Error fetching hotels: ' + error.message;
+//   }
+// });
+
+function filterHotelsByCountryCode(data, countryCode) {
+  return data.hotels.filter(hotel => hotel.countryCode === countryCode);
+}
+
+// Example: Filter hotels with countryCode 'TR'
+const filteredHotels = filterHotelsByCountryCode(hotelData, 'TR');
+
+// Output filtered hotels to console
+console.log(filteredHotels);
 
