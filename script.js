@@ -1,5 +1,5 @@
 document.getElementById('fetchDataBtn').addEventListener('click', () => {
-  fetch('/api/fetch-hotels')
+  fetch('/fetch-hotels')
     .then(response => {
       console.log('Status:', response.status); // Log the status code
       console.log('Status Text:', response.statusText); // Log status text
