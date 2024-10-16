@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     // Make the API request to Novatours
     const response = await axios.get('https://pim.novatours.eu/webservice/celo111/LV/list-hotels', {
       headers: {
-        'Authorization': 'Bearer your_token_here',  // Replace with your actual token
+        'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',  // Replace with your actual token
         'User-Agent': 'Mozilla/5.0'
       }
     });
