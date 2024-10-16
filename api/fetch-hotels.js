@@ -19,6 +19,8 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    console.log(JSON.stringify(data, null, 2));
+
     // Filter the data based on the location provided
     const filteredData = data.hotels.filter(hotel => hotel.country_code === location);
 
