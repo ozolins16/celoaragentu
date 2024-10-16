@@ -1,66 +1,24 @@
-// import fetch from 'node-fetch';
-
-// export default async function handler(req, res) {
-//   const { location } = req.query; // Get the location from the query parameters
-
-//   try {
-//     // Fetch the hotel data from the external API
-//     const response = await fetch('https://pim.novatours.eu/webservice/celo111/LV/list-hotels', {
-//       method: 'GET',
-//       headers: {
-//         'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
-//         'User-Agent': 'Mozilla/5.0'
-//       }
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch hotels: ${response.status} ${response.statusText}`);
-//     }
-
-//     const data = await response.json();
-
-//     // Return the full API data to the client (without filtering)
-//     res.status(200).json(data);
-//   } catch (error) {
-//     console.error('Error fetching hotel data:', error.message);
-//     res.status(500).json({ message: 'Error fetching hotel data', error: error.message });
-//   }
-// }
-
-import fetch from 'node-fetch';
-
 export default async function handler(req, res) {
-  const { location } = req.query; // Get the location from the query parameters
-
   try {
-    // Fetch the hotel data from the external API
     const response = await fetch('https://pim.novatours.eu/webservice/celo111/LV/list-hotels', {
       method: 'GET',
       headers: {
-        'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
+        'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',  // Replace with your actual token
         'User-Agent': 'Mozilla/5.0'
       }
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch hotels: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-
-    // Return the full API data to the client (without filtering)
-    res.status(200).json(data);
+    res.status(200).json(data);  // Send the API data to the client
   } catch (error) {
     console.error('Error fetching hotel data:', error.message);
     res.status(500).json({ message: 'Error fetching hotel data', error: error.message });
   }
 }
-
-
-
-
-
-
 
 
 
