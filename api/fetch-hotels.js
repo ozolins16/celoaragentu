@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     const response = await fetch('https://pim.novatours.eu/webservice/celo111/list-hotels', {
       method: 'GET',
       headers: {
-        'Authorization': 'Bearer your_token_here',
+        'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
         'User-Agent': 'Mozilla/5.0'
       }
     });
