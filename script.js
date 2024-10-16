@@ -33,13 +33,27 @@
 //   }
 // });
 
-function filterHotelsByCountryCode(data, countryCode) {
-  return data.hotels.filter(hotel => hotel.countryCode === countryCode);
-}
+document.getElementById('search').addEventListener('click', async () => {
+  // Get the selected country code from the dropdown
+  const selectedCountryCode = document.getElementById('location').value;
 
-// Example: Filter hotels with countryCode 'TR'
-const filteredHotels = filterHotelsByCountryCode(hotelData, 'TR');
+  try {
+    // Fetch hotel data from your custom API
+    const response = await fetch('/api/fetch-hotels'); // Adjust the path if necessary
 
-// Output filtered hotels to console
-console.log(filteredHotels);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch hotels: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Filter hotels based on the selected country code
+    const filteredHotels = data.hotels.filter(hotel => hotel.countryCode === selectedCountryCode);
+
+    // Display the filtered hotels on the page
+    document.getElementById('output').textContent = JSON.stringify(filteredHotels, null, 2);
+  } catch (error) {
+    document.getElementById('output').textContent = 'Error fetching hotels: ' + error.message;
+  }
+});
 
