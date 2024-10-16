@@ -1,4 +1,5 @@
 const location = document.getElementById('location').value;
+console.log(`https://pim.novatours.eu/webservice/celo111/LV/list-hotels?country_code[]=${location}`)
 export default async function handler(req, res) {
   try {
     const response = await fetch(`https://pim.novatours.eu/webservice/celo111/LV/list-hotels?country_code[]=${location}`, {
