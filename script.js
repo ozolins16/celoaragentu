@@ -5,7 +5,7 @@ document.getElementById('search').addEventListener('click', async () => {
 
   try {
     // Make a fetch request to the server-side API endpoint, passing the selected location
-    const response = await fetch(`/api/fetch-hotels?country_code[]=${location}`);
+    const response = await fetch(`/api/fetch-hotels?location=LV`);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
