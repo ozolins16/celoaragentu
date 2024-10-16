@@ -45,15 +45,24 @@ document.getElementById('search').addEventListener('click', async () => {
       throw new Error(`Failed to fetch hotels: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json();
+    // Store the fetched data into a variable
+    const hotelData = await response.json(); // Ensure hotelData is assigned here
+
+    // Ensure that hotelData and hotels array exist before proceeding
+    if (!hotelData || !hotelData.hotels) {
+      throw new Error('Invalid hotel data structure');
+    }
 
     // Filter hotels based on the selected country code
-    const filteredHotels = data.hotels.filter(hotel => hotel.countryCode === selectedCountryCode);
+    const filteredHotels = hotelData.hotels.filter(hotel => hotel.countryCode === selectedCountryCode);
 
     // Display the filtered hotels on the page
     document.getElementById('output').textContent = JSON.stringify(filteredHotels, null, 2);
   } catch (error) {
+    // Handle errors and display the error message
     document.getElementById('output').textContent = 'Error fetching hotels: ' + error.message;
   }
+  console.log(hotelData); // Inspect the structure of the hotelData received
 });
+
 
