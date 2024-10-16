@@ -6,6 +6,7 @@ export default async function handler(req, res) {
 
   try {
     // Make the external API request with the selected country code
+    console.log(`https://pim.novatours.eu/webservice/celo111/list-hotels?country_code[]=${location}`);
     const response = await fetch(`https://pim.novatours.eu/webservice/celo111/list-hotels?country_code[]=${location}`, {
       method: 'GET',
       headers: {
