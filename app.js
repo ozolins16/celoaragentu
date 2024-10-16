@@ -7,8 +7,9 @@ document.getElementById('fetchDataBtn').addEventListener('click', () => {
       }
     })
     .then(response => {
+      console.log('Status:', response.status);  // Log the status code
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`Network response was not ok: ${response.statusText}`);
       }
       return response.json();
     })
