@@ -1,6 +1,7 @@
+const location = document.getElementById('location').value;
 export default async function handler(req, res) {
   try {
-    const response = await fetch('https://pim.novatours.eu/webservice/celo111/LV/list-hotels?country_code[]=LV', {
+    const response = await fetch(`https://pim.novatours.eu/webservice/celo111/LV/list-hotels?country_code[]=${location}`, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',  // Replace with your actual token

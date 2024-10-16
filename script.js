@@ -1,4 +1,4 @@
-document.getElementById('fetchDataBtn').addEventListener('click', () => {
+document.getElementById('search').addEventListener('click', () => {
   fetch('/api/fetch-hotels')
     .then(response => {
       console.log('Status:', response.status); // Log the status code
