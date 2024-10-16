@@ -1,16 +1,12 @@
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
-  // Get the "location" parameter from the query string
-  const { location } = req.query;
-
   try {
-    // Make the external API request with the selected country code
-    console.log(`https://pim.novatours.eu/webservice/celo111/list-hotels?country_code[]=${location}`);
-    const response = await fetch(`https://pim.novatours.eu/webservice/celo111/list-hotels?country_code[]=${location}`, {
+    // Fetch all hotel data (assuming the API returns all locations)
+    const response = await fetch('https://pim.novatours.eu/webservice/celo111/list-hotels', {
       method: 'GET',
       headers: {
-        'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
+        'Authorization': 'Bearer your_token_here',
         'User-Agent': 'Mozilla/5.0'
       }
     });
@@ -20,12 +16,22 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    res.status(200).json(data);
+
+    // Get the location parameter (e.g., LV) from the client
+    const { location } = req.query;
+
+    // Filter the hotels based on location
+    const filteredData = data.hotels.filter(hotel => hotel.country_code === location);
+
+    // Return the filtered data
+    res.status(200).json(filteredData);
+
   } catch (error) {
     console.error('Error fetching hotel data:', error.message);
     res.status(500).json({ message: 'Error fetching hotel data', error: error.message });
   }
 }
+
 
 
 
