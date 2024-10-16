@@ -1,5 +1,5 @@
 document.getElementById('fetchDataBtn').addEventListener('click', () => {
-    fetch('https://pim.novatours.eu/webservice/celo111/LV/list-hotels', {
+    fetch('https://cors-anywhere.herokuapp.com/https://pim.novatours.eu/webservice/celo111/LV/list-hotels', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',  // Replace with your actual token
