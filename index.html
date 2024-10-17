@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel Search</title>
     <script defer src="script.js"></script>
+    <script defer src="/api/fetch-destinations.js"></script>
 </head>
 <body>
     <h1>Search Hotels by Location</h1>
@@ -12,12 +13,8 @@
     <!-- Form for selecting a location -->
     <form id="hotelSearchForm">
         <label for="location">Choose a location:</label>
-        <select id="location" name="location">
-            <option value="LV">Latvia</option>
-            <option value="LT">Lithuania</option>
-            <option value="EE">Estonia</option>
+        <select id="location-select" name="location">
         </select>
-
         <button type="button" id="search">Search Hotels</button>
     </form>
 
