@@ -1,25 +1,30 @@
-const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-const apiUrl = 'https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab';
+const fetch = require('node-fetch');
 
-fetch(proxyUrl + apiUrl, {
-  method: 'GET',
-  headers: {
-    'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
-    'User-Agent': 'Mozilla/5.0',
-  },
-})
-  .then(response => {
+async function handler(req, res) {
+  try {
+    // Fetch the hotel data from the external API
+    const response = await fetch('https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
+        'User-Agent': 'Mozilla/5.0',
+      },
+    });
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status}`);
+      throw new Error(`Failed to fetch hotels: ${response.status} ${response.statusText}`);
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+
+    const data = await response.json();
+    res.status(200).json(data); // Send the data to the frontend
+  } catch (error) {
+    console.error('Error fetching hotel data:', error.message);
+    res.status(500).json({ message: 'Error fetching hotel data', error: error.message });
+  }
+}
+
+module.exports = handler;
+
 
 
 
