@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 const output = document.getElementById('output');
 
 export default async function handler(req, res) {
