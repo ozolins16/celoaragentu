@@ -1,9 +1,9 @@
 const output = document.getElementById('output');
 
-async function destinationData() {
+async function fetchDestinationData() {
     try {
         // Fetch data from your server-side API route
-        const response = await fetch('/api/fetch-destinations.js', {
+        const response = await fetch('/api/fetch-destinations', {
             method: 'GET',
         });
 
@@ -20,7 +20,7 @@ async function destinationData() {
     }
 }
 
-destinationData();
+fetchDestinationData();
 
 
 
