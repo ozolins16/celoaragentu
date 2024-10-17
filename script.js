@@ -6,7 +6,7 @@ document.getElementById('search').addEventListener('click', () => {
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.statusText} (Status: ${response.status})`);
       }
-      return response.json();
+      return hotels.filter(hotel => hotel.countryCode === 'TR');
     })
     .then(data => {
       document.getElementById('output').textContent = JSON.stringify(data, null, 2);
