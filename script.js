@@ -1,23 +1,35 @@
-document.getElementById('search').addEventListener('click', async () => {
-  // Get the selected country code from the dropdown or input field
-  const countryCode = document.getElementById('location').value;
-
-  try {
-    // Fetch all hotels from the server-side API (fetch-hotels.js)
-    const response = await fetch('/api/fetch-hotels');
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch hotels: ${response.status} ${response.statusText}`);
+async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok) {
+        return response;
+      }
+    } catch (error) {
+      if (i < retries - 1) {
+        console.log(`Retrying... (${i + 1}/${retries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        throw error;
+      }
     }
+  }
+}
+
+export default async function handler(req, res) {
+  try {
+    const response = await fetchWithRetry('https://pim.novatours.eu/webservice/celo111/LV/list-hotels', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
+        'User-Agent': 'Mozilla/5.0'
+      }
+    });
 
     const data = await response.json();
-
-    // Filter the hotels based on the selected country code
-    const filteredHotels = data.hotels.filter(hotel => hotel.countryCode === countryCode);
-
-    // Display the filtered hotels on the page
-    document.getElementById('output').textContent = JSON.stringify(filteredHotels, null, 2);
+    res.status(200).json(data);
   } catch (error) {
-    document.getElementById('output').textContent = 'Error fetching hotels: ' + error.message;
+    console.error('Error fetching hotel data:', error.message);
+    res.status(500).json({ message: 'Error fetching hotel data', error: error.message });
   }
-});
+}
