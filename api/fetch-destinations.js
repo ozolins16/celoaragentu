@@ -1,6 +1,6 @@
 const output = document.getElementById('output');
 
-async function destinationData() {
+export default async function handler(req, res) {
     try {
         const response = await fetch('https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab', {
                 method: 'GET',
@@ -24,7 +24,6 @@ async function destinationData() {
 }
 
 
-destinationData();
 
 
 
