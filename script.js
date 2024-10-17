@@ -1,3 +1,26 @@
+const output = document.getElementById('output');
+
+async function destinationData() {
+    try {
+        // Fetch data from your server-side API route
+        const response = await fetch('/api/fetchDestination', {
+            method: 'GET',
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null, 2); // Pretty-print the JSON data
+
+    } catch (error) {
+        console.error('Error:', error);
+        output.textContent = `Error: ${error.message}`;
+    }
+}
+
+destinationData();
 
 
 
