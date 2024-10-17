@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hotel Search</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Search</title>
+    <script defer src="script.js"></script>
 </head>
 <body>
+    <h1>Search Hotels by Location</h1>
 
-  <h1>Hotel Search</h1>
+    <!-- Form for selecting a location -->
+    <form id="hotelSearchForm">
+        <label for="location">Choose a location:</label>
+        <select id="location" name="location">
+            <option value="LV">Latvia</option>
+            <option value="LT">Lithuania</option>
+            <option value="EE">Estonia</option>
+        </select>
 
-  <button id="search">Search Hotels</button>
-  <pre id="output"></pre>
+        <button type="button" id="search">Search Hotels</button>
+    </form>
 
-  <!-- Include the script -->
-  <script src="script.js"></script>
-
+    <!-- Display result -->
+    <pre id="output"></pre>
 </body>
 </html>
