@@ -1,10 +1,8 @@
 document.getElementById('search').addEventListener('click', () => {
   fetch('/api/fetch-hotels')
     .then(response => {
-      console.log('Status:', response.status); // Log the status code
-      console.log('Status Text:', response.statusText); // Log status text
       if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.statusText} (Status: ${response.status})`);
+        throw new Error(`Network response was not ok: ${response.statusText}`);
       }
       return response.json();
     })
