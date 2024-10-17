@@ -13,11 +13,11 @@ async function destinationData() {
         if (!response.ok) {
             throw new Error(`Server error: ${response.status}`);
         }
-        
+
         const data = await response.json();
         output.textContent = JSON.stringify(data, null);
 
-    }catch {
+    }catch(error) {
         console.error('Error:', error);
         output.textContent = `Error: ${error.message}`;
     }
