@@ -1,16 +1,28 @@
 const output = document.getElementById('output');
 
 async function destinationData() {
-    const response = await fetch('https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab', {
-              method: 'GET',
-              headers: {
-                'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5938.132 Safari/537.36',
-              },
-            });
-    const data = await response.json();
-    output.textContent = JSON.stringify(data, null);
+    try {
+        const response = await fetch('https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5938.132 Safari/537.36',
+                },
+                });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null);
+
+    }catch {
+        console.error('Error:', error);
+        output.textContent = `Error: ${error.message}`;
+    }
 }
+
 
 destinationData();
 
