@@ -59,6 +59,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
-// Call the function to populate the <select> on page load
 populateLocationOptions();
+
+document.getElementById('search-btn').addEventListener('click', getHotels)
+let results = document.getElementById('results')
+
+function getHotels(){
+  const selectedCountry = locationSelect.value; // Get the selected country code
+  if (selectedCountry) {
+    // Make an API request with the selected country
+    fetchHotelsForCountry(selectedCountry);
+  } else {
+    results.textContent = 'Please select a country.';
+  }
+}
+
+// Function to fetch hotels for the selected country
+function fetchHotelsForCountry(countryCode) {
+  // Here we assume that you have a backend API that can handle fetching hotels for a specific country
+  fetch(`/api/list-hotels?countryCode[]=${countryCode}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch hotels for country ${countryCode}: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      displayResults(data);  // Display the results on the page
+    })
+    .catch(error => {
+      results.textContent = `Error fetching hotels: ${error.message}`;
+    });
+}
+
+// Function to display the results
+function displayResults(data) {
+  results.textContent = JSON.stringify(data, null, 2);  // Pretty print the results in <pre> tag
+}
