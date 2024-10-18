@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const locationSelect = document.getElementById('location');  // Make sure this is correctly declared here
+  const locationSelect = document.getElementById('location');
   const searchButton = document.getElementById('search');
   const results = document.getElementById('results');
 
@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to fetch hotels for the selected country
   function fetchHotelsForCountry(countryCode) {
-    // Ensure that the API endpoint is correct
-    fetch(`/api/list-hotels?country_code[]=${countryCode}`)  // Removed the "[]" notation
+    // Make an API request to the server with the selected country
+    fetch(`/api/fetch-hotels?countryCode=${countryCode}`)
       .then(response => {
         if (!response.ok) {
           throw new Error(`Failed to fetch hotels for country ${countryCode}: ${response.statusText}`);
