@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to fetch hotels for the selected country
   function fetchHotelsForCountry(countryCode) {
     // Ensure that the API endpoint is correct
-    fetch(`/api/list-hotels?country_code=${countryCode}`)  // Removed the "[]" notation
+    fetch(`/api/list-hotels?country_code[]=${countryCode}`)  // Removed the "[]" notation
       .then(response => {
         if (!response.ok) {
           throw new Error(`Failed to fetch hotels for country ${countryCode}: ${response.statusText}`);
