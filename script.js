@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const locationSelect = document.getElementById('location');
   const searchButton = document.getElementById('search');
   const results = document.getElementById('results');
-  const hotelsContainer = document.getElementById('hotels-container');  // Where to display hotels
-
+  const hotelsContainer = document.getElementById('hotels-container'); 
+  
   // Fetch country data from the backend API route
   fetch('/api/fetch-hotels')
     .then(response => response.json())
@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fetch hotels for the selected country
   function fetchHotelsForCountry(countryCode) {
-    fetch(`/api/fetch-hotels?countryCode=${countryCode}`)
+    fetch(`/api/fetch-hotels?countryCode=${countryCode}`) 
       .then(response => response.json())
-      .then(data => displayHotels(data.hotels))  // Assuming `hotels` is the key in the returned data
+      .then(data => displayHotels(data.hotels))  // `hotels` is the key in the returned data
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });
