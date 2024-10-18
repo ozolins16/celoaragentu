@@ -2,40 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const locationSelect = document.getElementById('location');
   const searchButton = document.getElementById('search');
   const results = document.getElementById('results');
+  const hotelsContainer = document.getElementById('hotels-container');  // Where to display hotels
 
   // Fetch country data from the backend API route
   fetch('/api/fetch-hotels')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch countries: ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      populateCountryOptions(data);
-    })
-    .catch(error => {
-      console.error('Error fetching country data:', error.message);
-    });
+    .then(response => response.json())
+    .then(data => populateCountryOptions(data))
+    .catch(error => console.error('Error fetching country data:', error.message));
 
-  // Function to populate the <select> element with options (countries only)
+  // Populate country options
   function populateCountryOptions(data) {
     const destinations = data.destinations_tab;
-
-    // Loop through each country in the destinations_tab
     for (const countryCode in destinations) {
       if (destinations.hasOwnProperty(countryCode)) {
-        const cities = destinations[countryCode];
-
-        // Get the country name from the first city (all cities in the same country share the same country name)
-        const countryName = cities[0].country_name;
-
-        // Create a new <option> element
+        const countryName = destinations[countryCode][0].country_name;
         const option = document.createElement('option');
-        option.value = countryCode;  // Set the value to the country code
-        option.textContent = countryName;  // Set the display text to the country name
-
-        // Append the <option> to the <select> element
+        option.value = countryCode;
+        option.textContent = countryName;
         locationSelect.appendChild(option);
       }
     }
@@ -43,35 +26,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add event listener for the Search button
   searchButton.addEventListener('click', () => {
-    const selectedCountry = locationSelect.value; // Get the selected country code
+    const selectedCountry = locationSelect.value;
     if (selectedCountry) {
-      // Make an API request with the selected country
       fetchHotelsForCountry(selectedCountry);
     } else {
       results.textContent = 'Please select a country.';
     }
   });
 
-  // Function to fetch hotels for the selected country
+  // Fetch hotels for the selected country
   function fetchHotelsForCountry(countryCode) {
-    // Make an API request to the server with the selected country
     fetch(`/api/fetch-hotels?countryCode=${countryCode}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch hotels for country ${countryCode}: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        displayResults(data);  // Display the results on the page
-      })
+      .then(response => response.json())
+      .then(data => displayHotels(data.hotels))  // Assuming `hotels` is the key in the returned data
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });
   }
 
-  // Function to display the results
-  function displayResults(data) {
-    results.textContent = JSON.stringify(data, null, 2);  // Pretty print the results in <pre> tag
+  // Function to display hotels
+  function displayHotels(hotels) {
+    // Clear previous hotels
+    hotelsContainer.innerHTML = '';
+
+    // Loop through each hotel and create HTML for it
+    hotels.forEach(hotel => {
+      const hotelDiv = document.createElement('div');
+      hotelDiv.className = 'hotel';
+
+      // Add hotel name
+      const hotelName = document.createElement('h2');
+      hotelName.textContent = hotel.name;
+      hotelDiv.appendChild(hotelName);
+
+      // Add hotel image
+      if (hotel.media && hotel.media.length > 0) {
+        const hotelImg = document.createElement('img');
+        hotelImg.src = hotel.media[0].image.midResImage;  // Use midResImage for better quality
+        hotelImg.alt = hotel.name;
+        hotelDiv.appendChild(hotelImg);
+      }
+
+      // Add hotel location
+      const hotelLocation = document.createElement('p');
+      hotelLocation.textContent = `Location: ${hotel.city}, ${hotel.country}`;
+      hotelDiv.appendChild(hotelLocation);
+
+      // Add hotel rating
+      const hotelRating = document.createElement('p');
+      hotelRating.textContent = `Rating: ${hotel.rating} / ${hotel.maxRating}`;
+      hotelDiv.appendChild(hotelRating);
+
+      // Append hotelDiv to the container
+      hotelsContainer.appendChild(hotelDiv);
+    });
   }
 });
