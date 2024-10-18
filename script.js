@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-populateLocationOptions();
 
 document.getElementById('search-btn').addEventListener('click', getHotels)
 let results = document.getElementById('results')
@@ -77,7 +76,7 @@ function getHotels(){
 // Function to fetch hotels for the selected country
 function fetchHotelsForCountry(countryCode) {
   // Here we assume that you have a backend API that can handle fetching hotels for a specific country
-  fetch(`/api/list-hotels?countryCode[]=${countryCode}`)
+  fetch(`/api/list-hotels?country_code[]=${countryCode}`)
     .then(response => {
       if (!response.ok) {
         throw new Error(`Failed to fetch hotels for country ${countryCode}: ${response.statusText}`);
