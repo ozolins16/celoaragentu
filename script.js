@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-document.getElementById('search-btn').addEventListener('click', getHotels)
+document.getElementById('search').addEventListener('click', getHotels)
 let results = document.getElementById('results')
 
 function getHotels(){
