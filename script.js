@@ -1,24 +1,7 @@
-// document.getElementById('search').addEventListener('click', () => {
-//   fetch('/api/fetch-hotels')
-//     .then(response => {
-//       console.log('Status:', response.status); // Log the status code
-//       console.log('Status Text:', response.statusText); // Log status text
-//       if (!response.ok) {
-//         throw new Error(`Network response was not ok: ${response.statusText} (Status: ${response.status})`);
-//       }
-//       const availableLocations = response.json();
-
-//     })
-//     .then(data => {
-//       document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-//     })
-//     .catch(error => {
-//       document.getElementById('output').textContent = 'Error fetching data: ' + error.message;
-//     });
-// });
-
 document.addEventListener('DOMContentLoaded', () => {
-  const locationSelect = document.getElementById('location');
+  const locationSelect = document.getElementById('location');  // Make sure this is correctly declared here
+  const searchButton = document.getElementById('search');
+  const results = document.getElementById('results');
 
   // Fetch country data from the backend API route
   fetch('/api/fetch-hotels')
@@ -57,41 +40,38 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-});
 
+  // Add event listener for the Search button
+  searchButton.addEventListener('click', () => {
+    const selectedCountry = locationSelect.value; // Get the selected country code
+    if (selectedCountry) {
+      // Make an API request with the selected country
+      fetchHotelsForCountry(selectedCountry);
+    } else {
+      results.textContent = 'Please select a country.';
+    }
+  });
 
-document.getElementById('search').addEventListener('click', getHotels)
-let results = document.getElementById('results')
-
-function getHotels(){
-  const selectedCountry = locationSelect.value; // Get the selected country code
-  if (selectedCountry) {
-    // Make an API request with the selected country
-    fetchHotelsForCountry(selectedCountry);
-  } else {
-    results.textContent = 'Please select a country.';
+  // Function to fetch hotels for the selected country
+  function fetchHotelsForCountry(countryCode) {
+    // Ensure that the API endpoint is correct
+    fetch(`/api/list-hotels?countryCode=${countryCode}`)  // Removed the "[]" notation
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch hotels for country ${countryCode}: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        displayResults(data);  // Display the results on the page
+      })
+      .catch(error => {
+        results.textContent = `Error fetching hotels: ${error.message}`;
+      });
   }
-}
 
-// Function to fetch hotels for the selected country
-function fetchHotelsForCountry(countryCode) {
-  // Here we assume that you have a backend API that can handle fetching hotels for a specific country
-  fetch(`/api/list-hotels?country_code[]=${countryCode}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch hotels for country ${countryCode}: ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      displayResults(data);  // Display the results on the page
-    })
-    .catch(error => {
-      results.textContent = `Error fetching hotels: ${error.message}`;
-    });
-}
-
-// Function to display the results
-function displayResults(data) {
-  results.textContent = JSON.stringify(data, null, 2);  // Pretty print the results in <pre> tag
-}
+  // Function to display the results
+  function displayResults(data) {
+    results.textContent = JSON.stringify(data, null, 2);  // Pretty print the results in <pre> tag
+  }
+});
