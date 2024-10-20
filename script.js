@@ -42,7 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make the API request with the constructed query string
     fetch(`/api/fetch-hotels?${queryParams.toString()}`)
       .then(response => response.json())
-      .then(data => displayHotels(data.hotels))  // Adjust based on actual API response
+      .then(data => {
+        console.log(data);  // Log the API response to debug the structure
+        if (data && data.hotels && Array.isArray(data.hotels)) {
+          displayHotels(data.hotels);  // Display hotels if they exist
+        } else {
+          results.textContent = 'No hotels found or unexpected response format.';
+        }
+      })
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });
