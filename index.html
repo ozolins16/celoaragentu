@@ -36,19 +36,19 @@
   
     .slider {
       display: flex;
-      transition: transform 0.5s ease-in-out;
     }
   
     .slide {
       min-width: 100%;
-      display: none;  /* Hide all slides by default */
       transition: opacity 0.5s ease;
     }
   
-    .active {
-      min-width: 100%;
+    .slide.hidden {
+      display: none;  /* Hide all non-active slides */
+    }
+  
+    .slide.active {
       display: block;  /* Show only the active slide */
-      transition: opacity 0.5s ease;
     }
   
     .prev, .next {
@@ -69,8 +69,6 @@
       right: 0;
     }
   </style>
-  
-  
 </head>
 <body>
   <h1>Search Hotels</h1>

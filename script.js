@@ -76,6 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
           img.classList.add('slide');
           if (index === 0) {
             img.classList.add('active');  // Set the first image as active by default
+          } else {
+            img.classList.add('hidden');  // Hide other images by default
           }
           slider.appendChild(img);
         });
@@ -112,12 +114,14 @@ function nextSlide(hotelCode) {
     if (slide.classList.contains('active')) {
       currentIndex = index;
       slide.classList.remove('active');
+      slide.classList.add('hidden');  // Hide the current active slide
     }
   });
 
   // Show the next slide, loop back to the first slide if at the end
   const nextIndex = (currentIndex + 1) % slides.length;
-  slides[nextIndex].classList.add('active');
+  slides[nextIndex].classList.remove('hidden');
+  slides[nextIndex].classList.add('active');  // Set the next slide as active
 }
 
 function prevSlide(hotelCode) {
@@ -130,11 +134,12 @@ function prevSlide(hotelCode) {
     if (slide.classList.contains('active')) {
       currentIndex = index;
       slide.classList.remove('active');
+      slide.classList.add('hidden');  // Hide the current active slide
     }
   });
 
   // Show the previous slide, loop back to the last slide if at the start
   const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
-  slides[prevIndex].classList.add('active');
-  slides[prevIndex].classList.remove('slide');
+  slides[prevIndex].classList.remove('hidden');
+  slides[prevIndex].classList.add('active');  // Set the previous slide as active
 }
