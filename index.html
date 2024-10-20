@@ -28,29 +28,32 @@
   
     .slider-container {
       position: relative;
-      width: 100%;
-      max-width: 600px;
+      width: 750px;  /* Set the desired width for the slider */
+      height: 500px; /* Set the desired height for the slider */
       margin: auto;
-      overflow: hidden;
+      overflow: hidden; /* Hide the parts of images that overflow */
     }
   
     .slider {
       display: flex;
-      object-fit: fill;
-      overflow: hidden;
+      transition: transform 0.5s ease-in-out;
     }
   
     .slide {
       min-width: 100%;
-      transition: opacity 0.5s ease;
-    }
-  
-    .slide.hidden {
-      display: none;  /* Hide all non-active slides */
+      height: 100%;
+      display: none; /* Hide non-active slides */
     }
   
     .slide.active {
-      display: block;  /* Show only the active slide */
+      display: block; /* Show the active slide */
+    }
+  
+    /* Ensure all images fit within the slider dimensions */
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Crop images while maintaining aspect ratio */
     }
   
     .prev, .next {
@@ -71,6 +74,7 @@
       right: 0;
     }
   </style>
+  
 </head>
 <body>
   <h1>Search Hotels</h1>
