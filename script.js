@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchButton = document.getElementById('search');
   const results = document.getElementById('results');
   const hotelsContainer = document.getElementById('hotels-container');
-
-  // Input for adults
   const adultsInput = document.getElementById('adults');
 
   // Fetch country data from the backend API (fetches list of destinations)
@@ -36,20 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Construct query string
     const queryParams = new URLSearchParams();
-    if (selectedCountry) queryParams.append('country_code[]', selectedCountry);
+    if (selectedCountry) queryParams.append('countryCode', selectedCountry);
     if (adults) queryParams.append('adults', adults);
 
     // Make the API request with the constructed query string
     fetch(`/api/fetch-hotels?${queryParams.toString()}`)
       .then(response => response.json())
-      .then(data => {
-        console.log(data);  // Log the API response to debug the structure
-        if (data && data.hotels && Array.isArray(data.hotels)) {
-          displayHotels(data.hotels);  // Display hotels if they exist
-        } else {
-          results.textContent = 'No hotels found or unexpected response format.';
-        }
-      })
+      .then(data => displayHotels(data.hotels))  // Adjust based on actual API response
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });
@@ -67,12 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <p>Location: ${hotel.city}, ${hotel.country}</p>
         <p>Rating: ${hotel.rating} / ${hotel.maxRating}</p>
       `;
-      if (hotel.media && hotel.media.length > 0) {
-        const img = document.createElement('img');
-        img.src = hotel.media[0].image.midResImage;
-        img.alt = hotel.name;
-        hotelDiv.appendChild(img);
-      }
+      const img = document.createElement('img');
+      img.src = hotel.media[0].image.midResImage;
+      img.alt = hotel.name;
+      hotelDiv.appendChild(img);
       hotelsContainer.appendChild(hotelDiv);
     });
   }
