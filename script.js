@@ -2,82 +2,56 @@ document.addEventListener('DOMContentLoaded', () => {
   const locationSelect = document.getElementById('location');
   const searchButton = document.getElementById('search');
   const results = document.getElementById('results');
-  const hotelsContainer = document.getElementById('hotels-container'); 
-  
-  // Fetch country data from the backend API route
-  fetch('/api/fetch-hotels')
-    .then(response => response.json())
-    .then(data => populateCountryOptions(data))
-    .catch(error => console.error('Error fetching country data:', error.message));
-
-  // Populate country options
-  function populateCountryOptions(data) {
-    const destinations = data.destinations_tab;
-    for (const countryCode in destinations) {
-      if (destinations.hasOwnProperty(countryCode)) {
-        const countryName = destinations[countryCode][0].country_name;
-        const option = document.createElement('option');
-        option.value = countryCode;
-        option.textContent = countryName;
-        locationSelect.appendChild(option);
-      }
-    }
-  }
+  const hotelsContainer = document.getElementById('hotels-container');
+  const adultsInput = document.getElementById('adults');  // Assuming an input for adults
+  const childrenInput = document.getElementById('children');  // Assuming an input for children
 
   // Add event listener for the Search button
   searchButton.addEventListener('click', () => {
     const selectedCountry = locationSelect.value;
-    if (selectedCountry) {
-      fetchHotelsForCountry(selectedCountry);
-    } else {
-      results.textContent = 'Please select a country.';
-    }
-  });
+    const adults = adultsInput.value;  // Get number of adults
+    const children = childrenInput.value;  // Get number of children
 
-  // Fetch hotels for the selected country
-  function fetchHotelsForCountry(countryCode) {
-    fetch(`/api/fetch-hotels?countryCode=${countryCode}`) 
+    // Construct query string using URLSearchParams
+    const queryParams = new URLSearchParams();
+
+    if (selectedCountry) {
+      queryParams.append('country_code[]', selectedCountry);
+    }
+    if (adults) {
+      queryParams.append('adults', adults);
+    }
+    if (children) {
+      queryParams.append('children', children);
+    }
+
+    // Make the API request with the constructed query string
+    fetch(`/api/fetch-hotels?${queryParams.toString()}`)
       .then(response => response.json())
-      .then(data => displayHotels(data.hotels))  // `hotels` is the key in the returned data
+      .then(data => displayHotels(data.hotels))
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });
-  }
+  });
 
   // Function to display hotels
   function displayHotels(hotels) {
-    // Clear previous hotels
-    hotelsContainer.innerHTML = '';
+    hotelsContainer.innerHTML = '';  // Clear previous results
 
-    // Loop through each hotel and create HTML for it
     hotels.forEach(hotel => {
       const hotelDiv = document.createElement('div');
       hotelDiv.className = 'hotel';
-
-      // Add hotel name
-      const hotelName = document.createElement('h2');
-      hotelName.textContent = hotel.name;
-      hotelDiv.appendChild(hotelName);
-
-      // Add hotel image
+      hotelDiv.innerHTML = `
+        <h2>${hotel.name}</h2>
+        <p>Location: ${hotel.city}, ${hotel.country}</p>
+        <p>Rating: ${hotel.rating} / ${hotel.maxRating}</p>
+      `;
       if (hotel.media && hotel.media.length > 0) {
-        const hotelImg = document.createElement('img');
-        hotelImg.src = hotel.media[0].image.midResImage;  // Use midResImage for better quality
-        hotelImg.alt = hotel.name;
-        hotelDiv.appendChild(hotelImg);
+        const img = document.createElement('img');
+        img.src = hotel.media[0].image.midResImage;
+        img.alt = hotel.name;
+        hotelDiv.appendChild(img);
       }
-
-      // Add hotel location
-      const hotelLocation = document.createElement('p');
-      hotelLocation.textContent = `Location: ${hotel.city}, ${hotel.country}`;
-      hotelDiv.appendChild(hotelLocation);
-
-      // Add hotel rating
-      const hotelRating = document.createElement('p');
-      hotelRating.textContent = `Rating: ${hotel.rating} / ${hotel.maxRating}`;
-      hotelDiv.appendChild(hotelRating);
-
-      // Append hotelDiv to the container
       hotelsContainer.appendChild(hotelDiv);
     });
   }

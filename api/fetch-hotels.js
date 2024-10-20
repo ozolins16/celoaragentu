@@ -1,13 +1,27 @@
 export default async function handler(req, res) {
-  const { countryCode } = req.query;  // Get the countryCode from the query string
+  const { countryCode, adults, children } = req.query;  // Capture multiple query parameters
+
+  // Initialize query parameters for the API request
+  const queryParams = new URLSearchParams();
+
+  // Add parameters conditionally based on whether they exist
+  if (countryCode) {
+    queryParams.append('country_code[]', countryCode);  // Add country code
+  }
+  if (adults) {
+    queryParams.append('adults', adults);  // Add number of adults
+  }
+  if (children) {
+    queryParams.append('children', children);  // Add number of children
+  }
+
+  // You can continue adding more parameters as needed, for example, check-in and check-out dates.
 
   // Base URL for fetching hotel data
-  const apiUrl = countryCode 
-    ? `https://pim.novatours.eu/webservice/celo111/LV/list-hotels?country_code[]=${countryCode}`
-    : 'https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab';
+  const apiUrl = `https://pim.novatours.eu/webservice/celo111/LV/list-hotels?${queryParams.toString()}`;
 
   try {
-    // Fetch data from the API based on the selected country
+    // Fetch data from the external API with the constructed URL
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -27,6 +41,7 @@ export default async function handler(req, res) {
     res.status(500).json({ message: 'Error fetching hotel data', error: error.message });
   }
 }
+
 
   
   
