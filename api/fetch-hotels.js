@@ -3,7 +3,7 @@ export default async function handler(req, res) {
 
   // Base URL for fetching hotel data
   const apiUrl = countryCode 
-    ? `https://pim.novatours.eu/webservice/celo111/LV/list-hotel-offers?country_code[]=${countryCode}`
+    ? `https://pim.novatours.eu/webservice/celo111/LV/list-hotels?country_code[]=${countryCode}`
     : 'https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab';
 
   try {
