@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hotelDiv.innerHTML = `
         <h2>${hotel.name}</h2>
         <p>Location: ${hotel.city}, ${hotel.country}</p>
-        <p>Rating: ${hotel.rating} / ${hotel.maxRating}</p>
+        <p>Stars: ${hotel.stars}</p>
       `;
       const img = document.createElement('img');
       img.src = hotel.media[0].image.midResImage;
