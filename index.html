@@ -28,10 +28,10 @@
   
     .slider-container {
       position: relative;
-      width: 770px;  /* Set the desired width for the slider */
-      height: 513px; /* Set the desired height for the slider */
+      width: 770px;  
+      height: 513px; 
       margin: auto;
-      overflow: hidden; /* Hide any overflow */
+      overflow: hidden; 
     }
   
     .slider {
@@ -49,12 +49,11 @@
     }
 
     .slide.active {
-      display: block; /* Show the active slide */
+      display: block; 
     }
   
-    /* Ensure all images fit within the slider dimensions without being cut off */
     .slide img {
-      object-fit: cover; /* Scale the image to fit the container without cutting it off */
+      object-fit: cover; 
     }
   
     .prev, .next {
@@ -93,6 +92,7 @@
   <div class="input-group">
     <label for="adults">Number of adults:</label>
     <input type="number" id="adults" min="1" value="1">
+    <input type="text" id="date-picker" placeholder="Select Date" />
   </div>
 
   <br />
