@@ -9,7 +9,6 @@ export default async function handler(req, res) {
     if (adults) queryParams.append('adults=', adults);
 
     apiUrl = `https://pim.novatours.eu/webservice/celo111/LV/list-hotels?${queryParams.toString()}`;
-    console.log(apiUrl);
   } else {
     // If no countryCode, fetch the list of destinations
     apiUrl = 'https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab';
@@ -23,7 +22,7 @@ export default async function handler(req, res) {
         'User-Agent': 'Mozilla/5.0'
       }
     });
-
+    console.log(apiUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
     }
