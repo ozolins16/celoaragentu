@@ -136,4 +136,5 @@ function prevSlide(hotelCode) {
   // Show the previous slide, loop back to the last slide if at the start
   const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
   slides[prevIndex].classList.add('active');
+  slides[prevIndex].classList.remove('slide');
 }
