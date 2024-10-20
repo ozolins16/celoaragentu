@@ -1,92 +1,145 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const destinationSelect = document.getElementById('destination');
-  const datePicker = document.getElementById('date-picker');
+  const locationSelect = document.getElementById('location');
   const searchButton = document.getElementById('search');
   const results = document.getElementById('results');
+  const hotelsContainer = document.getElementById('hotels-container');
+  const adultsInput = document.getElementById('adults');
 
-  // Step 1: Populate the destination dropdown (assuming you have this implemented)
-  fetch('/api/fetch-destinations')  // Example endpoint for fetching destinations
+  // Fetch country data from the backend API (fetches list of destinations)
+  fetch('/api/fetch-hotels')  // This will fetch `list-destinations-tab` since no countryCode is provided
     .then(response => response.json())
-    .then(data => populateDestinationOptions(data))
-    .catch(error => console.error('Error fetching destinations:', error));
-
-  function populateDestinationOptions(data) {
-    // Assuming the data format has destination codes and names
-    data.forEach(destination => {
-      const option = document.createElement('option');
-      option.value = destination.countryCode; // Example: "AE"
-      option.textContent = destination.countryName; // Example: "United Arab Emirates"
-      destinationSelect.appendChild(option);
+    .then(data => populateCountryOptions(data))
+    .catch(error => {
+      results.textContent = `Error fetching country data: ${error.message}`;
     });
-  }
 
-  // Step 2: When the user selects a destination, fetch the available dates
-  destinationSelect.addEventListener('change', () => {
-    const selectedDestination = destinationSelect.value;
-
-    if (selectedDestination) {
-      fetchAvailableDates(selectedDestination);
+  // Populate the <select> element with country options
+  function populateCountryOptions(data) {
+    const destinations = data.destinations_tab;
+    for (const countryCode in destinations) {
+      if (destinations.hasOwnProperty(countryCode)) {
+        const countryName = destinations[countryCode][0].country_name;
+        const option = document.createElement('option');
+        option.value = countryCode;
+        option.textContent = countryName;
+        locationSelect.appendChild(option);
+      }
     }
-  });
-
-  // Function to fetch available dates for the selected destination
-  function fetchAvailableDates(countryCode) {
-    const apiUrl = `/api/fetch-hotel-offers?countryCode=${countryCode}`; // Replace with the actual endpoint for fetching hotel offers
-
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        const availableDates = extractAvailableDates(data); // You need to extract the available dates from the API response
-        initializeDatePicker(availableDates); // Initialize date picker with the available dates
-      })
-      .catch(error => console.error('Error fetching available dates:', error));
   }
 
-  // Function to extract available dates from the API response
-  function extractAvailableDates(data) {
-    // Assuming the API response contains available date ranges for the hotels or flights
-    // You would need to adjust this based on the actual response structure
-    const availableDates = data.map(offer => offer.check_in_from); // Adjust as per response format
-    return availableDates;
-  }
-
-  // Function to initialize the date picker with available dates
-  function initializeDatePicker(availableDates) {
-    flatpickr(datePicker, {
-      enable: availableDates.map(date => new Date(date)),  // Enable only available dates
-      dateFormat: "Y-m-d",
-    });
-  }
-
-  // Step 3: Search button logic (fetch hotel or flight data based on selected destination and date)
+  // Add event listener for the Search button
   searchButton.addEventListener('click', () => {
-    const selectedDestination = destinationSelect.value;
-    const selectedDate = datePicker.value;
+    const selectedCountry = locationSelect.value;
+    const adults = adultsInput.value;
 
-    if (selectedDestination && selectedDate) {
-      // Fetch the hotel or flight details based on the selected destination and date
-      const apiUrl = `/api/fetch-hotel-offers?countryCode=${selectedDestination}&check_in_from=${selectedDate}`;
+    // Construct query string
+    const queryParams = new URLSearchParams();
+    if (selectedCountry) queryParams.append('countryCode', selectedCountry);
+    if (adults) queryParams.append('adults', adults);
 
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => displayResults(data))
-        .catch(error => console.error('Error fetching hotels/flights:', error));
-    } else {
-      alert('Please select a destination and date.');
-    }
+    // Make the API request with the constructed query string
+    fetch(`/api/fetch-hotels?${queryParams.toString()}`)
+      .then(response => response.json())
+      .then(data => displayHotels(data.hotels))  // Adjust based on actual API response
+      .catch(error => {
+        results.textContent = `Error fetching hotels: ${error.message}`;
+      });
   });
 
-  function displayResults(data) {
-    results.innerHTML = ''; // Clear previous results
-    // Render the hotel/flight data in the results div
-    data.forEach(offer => {
-      const resultDiv = document.createElement('div');
-      resultDiv.innerHTML = `
-        <h3>${offer.name}</h3>
-        <p>Price: ${offer.price}</p>
-        <p>Available from: ${offer.check_in_from}</p>
+  // Function to display hotels with image slider
+  function displayHotels(hotels) {
+    hotelsContainer.innerHTML = '';  // Clear previous results
+
+    hotels.forEach(hotel => {
+      const hotelDiv = document.createElement('div');
+      hotelDiv.className = 'hotel';
+      hotelDiv.innerHTML = `
+        <h2>${hotel.name}</h2>
+        <p>Location: ${hotel.city}, ${hotel.country}</p>
+        <p>Stars: ${hotel.stars}</p>
+        <div class="slider-container">
+          <div class="slider" id="slider-${hotel.hotelCode}">
+            <!-- Images will be appended here -->
+          </div>
+          <button class="prev" data-hotel="${hotel.hotelCode}">Prev</button>
+          <button class="next" data-hotel="${hotel.hotelCode}">Next</button>
+        </div>
       `;
-      results.appendChild(resultDiv);
+      
+      // Loop through the hotel.media array to create image slides
+      if (hotel.media && hotel.media.length > 0) {
+        const slider = hotelDiv.querySelector(`#slider-${hotel.hotelCode}`);
+        hotel.media.forEach((mediaItem, index) => {
+          const img = document.createElement('img');
+          img.src = mediaItem.image.midResImage;
+          img.alt = `${hotel.name} - image ${index + 1}`;
+          img.classList.add('slide');
+          if (index === 0) {
+            img.classList.add('active');  // Set the first image as active by default
+          } else {
+            img.classList.add('hidden');  // Hide other images by default
+          }
+          slider.appendChild(img);
+        });
+      }
+
+      hotelsContainer.appendChild(hotelDiv);
+    });
+
+    // Attach event listeners to next and prev buttons
+    document.querySelectorAll('.next').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const hotelCode = e.target.getAttribute('data-hotel');
+        nextSlide(hotelCode);
+      });
+    });
+
+    document.querySelectorAll('.prev').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const hotelCode = e.target.getAttribute('data-hotel');
+        prevSlide(hotelCode);
+      });
     });
   }
 });
+
+// Functions for slider navigation
+function nextSlide(hotelCode) {
+  const slider = document.getElementById(`slider-${hotelCode}`);
+  const slides = slider.getElementsByClassName('slide');
+  let currentIndex = 0;
+
+  // Find the active slide
+  Array.from(slides).forEach((slide, index) => {
+    if (slide.classList.contains('active')) {
+      currentIndex = index;
+      slide.classList.remove('active');
+      slide.classList.add('hidden');  // Hide the current active slide
+    }
+  });
+
+  // Show the next slide, loop back to the first slide if at the end
+  const nextIndex = (currentIndex + 1) % slides.length;
+  slides[nextIndex].classList.remove('hidden');
+  slides[nextIndex].classList.add('active');  // Set the next slide as active
+}
+
+function prevSlide(hotelCode) {
+  const slider = document.getElementById(`slider-${hotelCode}`);
+  const slides = slider.getElementsByClassName('slide');
+  let currentIndex = 0;
+
+  // Find the active slide
+  Array.from(slides).forEach((slide, index) => {
+    if (slide.classList.contains('active')) {
+      currentIndex = index;
+      slide.classList.remove('active');
+      slide.classList.add('hidden');  // Hide the current active slide
+    }
+  });
+
+  // Show the previous slide, loop back to the last slide if at the start
+  const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+  slides[prevIndex].classList.remove('hidden');
+  slides[prevIndex].classList.add('active');  // Set the previous slide as active
+}
