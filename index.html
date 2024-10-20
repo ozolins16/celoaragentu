@@ -11,34 +11,63 @@
       margin: 16px;
       border-radius: 8px;
     }
-
+  
     .hotel img {
       max-width: 100%;
       height: auto;
       display: block;
     }
-
+  
     .hotel h2 {
       margin: 8px 0;
     }
-
+  
     .hotel p {
       margin: 4px 0;
     }
-
-    .input-group {
-      margin-bottom: 15px;
+  
+    .slider-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+      overflow: hidden;
     }
-
-    .input-group input {
-      width: 50px;
-      text-align: center;
-      font-size: 16px;
-      margin-left: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+  
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+  
+    .slide {
+      min-width: 100%;
+      transition: opacity 0.5s ease;
+      display: none;  /* Hide all slides by default */
+    }
+  
+    .slide.active {
+      display: block;  /* Show only the active slide */
+    }
+  
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #ddd;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+  
+    .prev {
+      left: 0;
+    }
+  
+    .next {
+      right: 0;
     }
   </style>
+  
 </head>
 <body>
   <h1>Search Hotels</h1>
