@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  // Function to display hotels
+  // Function to display hotels with image slider
   function displayHotels(hotels) {
     hotelsContainer.innerHTML = '';  // Clear previous results
 
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="slider" id="slider-${hotel.hotelCode}">
             <!-- Images will be appended here -->
           </div>
-          <button class="prev" onclick="prevSlide('${hotel.hotelCode}')">Prev</button>
-          <button class="next" onclick="nextSlide('${hotel.hotelCode}')">Next</button>
+          <button class="prev" data-hotel="${hotel.hotelCode}">Prev</button>
+          <button class="next" data-hotel="${hotel.hotelCode}">Next</button>
         </div>
       `;
       
@@ -83,45 +83,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
       hotelsContainer.appendChild(hotelDiv);
     });
+
+    // Attach event listeners to next and prev buttons
+    document.querySelectorAll('.next').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const hotelCode = e.target.getAttribute('data-hotel');
+        nextSlide(hotelCode);
+      });
+    });
+
+    document.querySelectorAll('.prev').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const hotelCode = e.target.getAttribute('data-hotel');
+        prevSlide(hotelCode);
+      });
+    });
   }
 });
 
-// Move the functions outside the displayHotels to the global scope
-
-// Function to go to the next slide
+// Functions for slider navigation
 function nextSlide(hotelCode) {
   const slider = document.getElementById(`slider-${hotelCode}`);
   const slides = slider.getElementsByClassName('slide');
-  let currentIndex;
+  let currentIndex = 0;
 
   // Find the active slide
   Array.from(slides).forEach((slide, index) => {
     if (slide.classList.contains('active')) {
-      slide.classList.remove('active');
       currentIndex = index;
+      slide.classList.remove('active');
     }
   });
 
-  // Show the next slide (wrap around if at the end)
+  // Show the next slide, loop back to the first slide if at the end
   const nextIndex = (currentIndex + 1) % slides.length;
   slides[nextIndex].classList.add('active');
 }
 
-// Function to go to the previous slide
 function prevSlide(hotelCode) {
   const slider = document.getElementById(`slider-${hotelCode}`);
   const slides = slider.getElementsByClassName('slide');
-  let currentIndex;
+  let currentIndex = 0;
 
   // Find the active slide
   Array.from(slides).forEach((slide, index) => {
     if (slide.classList.contains('active')) {
-      slide.classList.remove('active');
       currentIndex = index;
+      slide.classList.remove('active');
     }
   });
 
-  // Show the previous slide (wrap around if at the start)
+  // Show the previous slide, loop back to the last slide if at the start
   const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
   slides[prevIndex].classList.add('active');
 }
