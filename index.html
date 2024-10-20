@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hotel Search</title>
-  <!-- <style>
+  <style>
     .hotel {
       border: 1px solid #ddd;
       padding: 16px;
@@ -28,29 +28,36 @@
   
     .slider-container {
       position: relative;
-      width: 100%;
-      max-width: 600px;
+      width: 770px;  /* Set the desired width for the slider */
+      height: 513px; /* Set the desired height for the slider */
       margin: auto;
-      overflow: hidden;
+      overflow: hidden; /* Hide any overflow */
+      background-color: #f0f0f0; /* Optional: set a background color to fill empty space */
     }
   
     .slider {
       display: flex;
-      object-fit: fill;
-      overflow: hidden;
+      transition: transform 0.5s ease-in-out;
     }
   
     .slide {
       min-width: 100%;
-      transition: opacity 0.5s ease;
+      height: 100%;
     }
   
-    .slide.hidden {
-      display: none;  /* Hide all non-active slides */
+    .slide.hidden{
+      display: none;
     }
-  
+
     .slide.active {
-      display: block;  /* Show only the active slide */
+      display: block; /* Show the active slide */
+    }
+  
+    /* Ensure all images fit within the slider dimensions without being cut off */
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Scale the image to fit the container without cutting it off */
     }
   
     .prev, .next {
@@ -70,80 +77,8 @@
     .next {
       right: 0;
     }
-  </style> -->
-  <style>
-    .hotel {
-    border: 1px solid #ddd;
-    padding: 16px;
-    margin: 16px;
-    border-radius: 8px;
-  }
-
-  .hotel img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .hotel h2 {
-    margin: 8px 0;
-  }
-
-  .hotel p {
-    margin: 4px 0;
-  }
-
-  .slider-container {
-    position: relative;
-    width: 770px;  /* Set the desired width for the slider */
-    height: 513px; /* Set the desired height for the slider */
-    margin: auto;
-    overflow: hidden; /* Hide the parts of images that overflow */
-  }
-
-  .slider {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-  }
-
-  .slide {
-    min-width: 100%;
-    height: 100%;
-  }
-
-  .slide.hidden {
-      display: none;  /* Hide all non-active slides */
-    }
-
-  .slide.active {
-    display: block; /* Show the active slide */
-  }
-
-  /* Ensure all images fit within the slider dimensions */
-  .slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Crop images while maintaining aspect ratio */
-  }
-
-  .prev, .next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #ddd;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  .prev {
-    left: 0;
-  }
-
-  .next {
-    right: 0;
-  }
   </style>
+  
 </head>
 <body>
   <h1>Search Hotels</h1>
