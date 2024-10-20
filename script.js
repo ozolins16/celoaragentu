@@ -3,32 +3,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchButton = document.getElementById('search');
   const results = document.getElementById('results');
   const hotelsContainer = document.getElementById('hotels-container');
-  const adultsInput = document.getElementById('adults');  // Assuming an input for adults
-  const childrenInput = document.getElementById('children');  // Assuming an input for children
+
+  // Input for adults
+  const adultsInput = document.getElementById('adults');
+
+  // Fetch country data from the backend API (fetches list of destinations)
+  fetch('/api/fetch-hotels')  // This will fetch `list-destinations-tab` since no countryCode is provided
+    .then(response => response.json())
+    .then(data => populateCountryOptions(data))
+    .catch(error => {
+      results.textContent = `Error fetching country data: ${error.message}`;
+    });
+
+  // Populate the <select> element with country options
+  function populateCountryOptions(data) {
+    const destinations = data.destinations_tab;
+    for (const countryCode in destinations) {
+      if (destinations.hasOwnProperty(countryCode)) {
+        const countryName = destinations[countryCode][0].country_name;
+        const option = document.createElement('option');
+        option.value = countryCode;
+        option.textContent = countryName;
+        locationSelect.appendChild(option);
+      }
+    }
+  }
 
   // Add event listener for the Search button
   searchButton.addEventListener('click', () => {
     const selectedCountry = locationSelect.value;
-    const adults = adultsInput.value;  // Get number of adults
-    const children = childrenInput.value;  // Get number of children
+    const adults = adultsInput.value;
 
-    // Construct query string using URLSearchParams
+    // Construct query string
     const queryParams = new URLSearchParams();
-
-    if (selectedCountry) {
-      queryParams.append('country_code[]', selectedCountry);
-    }
-    if (adults) {
-      queryParams.append('adults', adults);
-    }
-    if (children) {
-      queryParams.append('children', children);
-    }
+    if (selectedCountry) queryParams.append('country_code[]', selectedCountry);
+    if (adults) queryParams.append('adults', adults);
 
     // Make the API request with the constructed query string
     fetch(`/api/fetch-hotels?${queryParams.toString()}`)
       .then(response => response.json())
-      .then(data => displayHotels(data.hotels))
+      .then(data => displayHotels(data.hotels))  // Adjust based on actual API response
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });

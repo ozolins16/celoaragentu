@@ -26,31 +26,17 @@
       margin: 4px 0;
     }
 
-    .counter {
-      display: flex;
-      align-items: center;
+    .input-group {
+      margin-bottom: 15px;
     }
 
-    .counter button {
-      width: 30px;
-      height: 30px;
-      font-size: 20px;
-      font-weight: bold;
-      line-height: 0;
-      text-align: center;
-    }
-
-    .counter input {
+    .input-group input {
       width: 50px;
       text-align: center;
       font-size: 16px;
-      margin: 0 10px;
+      margin-left: 10px;
       border: 1px solid #ddd;
       border-radius: 5px;
-    }
-
-    .counter-group {
-      margin-bottom: 15px;
     }
   </style>
 </head>
@@ -66,24 +52,10 @@
   
   <br /><br />
 
-  <!-- Counter for Adults -->
-  <div class="counter-group">
+  <!-- Input for Adults -->
+  <div class="input-group">
     <label for="adults">Number of adults:</label>
-    <div class="counter">
-      <button id="minus-adults">-</button>
-      <input type="text" id="adults" value="1" readonly>
-      <button id="plus-adults">+</button>
-    </div>
-  </div>
-
-  <!-- Counter for Children -->
-  <div class="counter-group">
-    <label for="children">Number of children:</label>
-    <div class="counter">
-      <button id="minus-children">-</button>
-      <input type="text" id="children" value="0" readonly>
-      <button id="plus-children">+</button>
-    </div>
+    <input type="number" id="adults" min="1" value="1">
   </div>
 
   <br />

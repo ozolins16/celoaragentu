@@ -1,32 +1,26 @@
 export default async function handler(req, res) {
-  const { countryCode, adults, children } = req.query;  // Capture multiple query parameters
+  const { countryCode, adults } = req.query;  // Only capture countryCode and adults
 
-  // Initialize query parameters for the API request
-  const queryParams = new URLSearchParams();
+  let apiUrl;
 
-  // Add parameters conditionally based on whether they exist
+  // If `countryCode` is provided, fetch hotels; otherwise, fetch the list of destinations
   if (countryCode) {
-    queryParams.append('country_code[]', countryCode);  // Add country code
-  }
-  if (adults) {
-    queryParams.append('adults', adults);  // Add number of adults
-  }
-  if (children) {
-    queryParams.append('children', children);  // Add number of children
-  }
+    const queryParams = new URLSearchParams();
+    queryParams.append('country_code[]', countryCode);
+    if (adults) queryParams.append('adults', adults);
 
-  // You can continue adding more parameters as needed, for example, check-in and check-out dates.
-
-  // Base URL for fetching hotel data
-  const apiUrl = `https://pim.novatours.eu/webservice/celo111/LV/list-hotels?${queryParams.toString()}`;
+    apiUrl = `https://pim.novatours.eu/webservice/celo111/LV/list-hotels?${queryParams.toString()}`;
+  } else {
+    // If no countryCode, fetch the list of destinations
+    apiUrl = 'https://pim.novatours.eu/webservice/celo111/LV/list-destinations-tab';
+  }
 
   try {
-    // Fetch data from the external API with the constructed URL
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer 72ae9d228c3f630b446a1b8a8cb8cbf3',  // Replace with your actual token
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5938.132 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0'
       }
     });
 
@@ -37,11 +31,10 @@ export default async function handler(req, res) {
     const data = await response.json();
     res.status(200).json(data);  // Send the API data to the client
   } catch (error) {
-    console.error('Error fetching hotel data:', error.message);
-    res.status(500).json({ message: 'Error fetching hotel data', error: error.message });
+    console.error('Error fetching data:', error.message);
+    res.status(500).json({ message: 'Error fetching data', error: error.message });
   }
 }
-
 
   
   
