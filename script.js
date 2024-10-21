@@ -4,11 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   const hotelsContainer = document.getElementById('hotels-container');
   const adultsInput = document.getElementById('adults');
+  const pagination = document.getElementById('pagination');
 
-  let currentPage = 1;  
+  let currentPage = 1;  // Initialize current page
 
   // Fetch country data from the backend API (fetches list of destinations)
-  fetch('/api/fetch-hotels')  // This will fetch `list-destinations-tab` since no countryCode is provided
+  fetch('/api/fetch-hotels')
     .then(response => response.json())
     .then(data => populateCountryOptions(data))
     .catch(error => {
@@ -31,6 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add event listener for the Search button
   searchButton.addEventListener('click', () => {
+    currentPage = 1;  // Reset to page 1 on new search
+    fetchHotels(currentPage);
+  });
+
+  // Function to fetch hotels with the current page
+  function fetchHotels(page) {
     const selectedCountry = locationSelect.value;
     const adults = adultsInput.value;
 
@@ -38,15 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const queryParams = new URLSearchParams();
     if (selectedCountry) queryParams.append('countryCode', selectedCountry);
     if (adults) queryParams.append('adults', adults);
+    if (page) queryParams.append('page', page);
 
     // Make the API request with the constructed query string
     fetch(`/api/fetch-hotels?${queryParams.toString()}`)
       .then(response => response.json())
-      .then(data => displayHotels(data.hotels))  // Adjust based on actual API response
+      .then(data => {
+        displayHotels(data.hotels);  // Adjust based on actual API response
+        setupPagination(data.pager);  // Handle pagination
+      })
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });
-  });
+  }
 
   // Function to display hotels with image slider
   function displayHotels(hotels) {
@@ -103,76 +114,31 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-  
-function setupPagination(pager) {
-  pagination.innerHTML = '';  // Clear previous pagination controls
 
-  // "Previous" button
-  if (pager.page > 1) {
-    const prevButton = document.createElement('button');
-    prevButton.textContent = 'Previous';
-    prevButton.addEventListener('click', () => {
-      currentPage--;
-      const selectedCountry = locationSelect.value;
-      const adults = adultsInput.value;
-      fetchHotels(selectedCountry, adults, currentPage);
-    });
-    pagination.appendChild(prevButton);
-  }
+  // Function to set up pagination
+  function setupPagination(pager) {
+    pagination.innerHTML = '';  // Clear previous pagination controls
 
-  // "Next" button
-  if (pager.page < pager.total_pages) {
-    const nextButton = document.createElement('button');
-    nextButton.textContent = 'Next';
-    nextButton.addEventListener('click', () => {
-      currentPage++;
-      const selectedCountry = locationSelect.value;
-      const adults = adultsInput.value;
-      fetchHotels(selectedCountry, adults, currentPage);
-    });
-    pagination.appendChild(nextButton);
+    // "Previous" button
+    if (pager.page > 1) {
+      const prevButton = document.createElement('button');
+      prevButton.textContent = 'Previous';
+      prevButton.addEventListener('click', () => {
+        currentPage--;
+        fetchHotels(currentPage);
+      });
+      pagination.appendChild(prevButton);
+    }
+
+    // "Next" button
+    if (pager.page < pager.total_pages) {
+      const nextButton = document.createElement('button');
+      nextButton.textContent = 'Next';
+      nextButton.addEventListener('click', () => {
+        currentPage++;
+        fetchHotels(currentPage);
+      });
+      pagination.appendChild(nextButton);
+    }
   }
-}
 });
-
-// Functions for slider navigation
-function nextSlide(hotelCode) {
-  const slider = document.getElementById(`slider-${hotelCode}`);
-  const slides = slider.getElementsByClassName('slide');
-  let currentIndex = 0;
-
-  // Find the active slide
-  Array.from(slides).forEach((slide, index) => {
-    if (slide.classList.contains('active')) {
-      currentIndex = index;
-      slide.classList.remove('active');
-      slide.classList.add('hidden');  // Hide the current active slide
-    }
-  });
-
-  // Show the next slide, loop back to the first slide if at the end
-  const nextIndex = (currentIndex + 1) % slides.length;
-  slides[nextIndex].classList.remove('hidden');
-  slides[nextIndex].classList.add('active');  // Set the next slide as active
-}
-
-function prevSlide(hotelCode) {
-  const slider = document.getElementById(`slider-${hotelCode}`);
-  const slides = slider.getElementsByClassName('slide');
-  let currentIndex = 0;
-
-  // Find the active slide
-  Array.from(slides).forEach((slide, index) => {
-    if (slide.classList.contains('active')) {
-      currentIndex = index;
-      slide.classList.remove('active');
-      slide.classList.add('hidden');  // Hide the current active slide
-    }
-  });
-
-  // Show the previous slide, loop back to the last slide if at the start
-  const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
-  slides[prevIndex].classList.remove('hidden');
-  slides[prevIndex].classList.add('active');  // Set the previous slide as active
-}
-
