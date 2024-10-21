@@ -5,8 +5,9 @@ export default async function handler(req, res) {
 
   if (countryCode) {
     const queryParams = new URLSearchParams();
-    queryParams.append('country_code[]=', countryCode);
-    if (adults) queryParams.append('adults=', adults);
+    if (countryCode) queryParams.append('country_code[]', countryCode);
+    if (adults) queryParams.append('adults', adults);
+    if (page) queryParams.append('page_no', page);  // Pass the current page
 
     apiUrl = `https://pim.novatours.eu/webservice/celo111/LV/list-hotels?${queryParams.toString()}`;
   } else {

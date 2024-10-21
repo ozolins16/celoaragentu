@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const hotelsContainer = document.getElementById('hotels-container');
   const adultsInput = document.getElementById('adults');
 
+  let currentPage = 1;  
+
   // Fetch country data from the backend API (fetches list of destinations)
   fetch('/api/fetch-hotels')  // This will fetch `list-destinations-tab` since no countryCode is provided
     .then(response => response.json())
@@ -101,6 +103,36 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+  
+function setupPagination(pager) {
+  pagination.innerHTML = '';  // Clear previous pagination controls
+
+  // "Previous" button
+  if (pager.page > 1) {
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Previous';
+    prevButton.addEventListener('click', () => {
+      currentPage--;
+      const selectedCountry = locationSelect.value;
+      const adults = adultsInput.value;
+      fetchHotels(selectedCountry, adults, currentPage);
+    });
+    pagination.appendChild(prevButton);
+  }
+
+  // "Next" button
+  if (pager.page < pager.total_pages) {
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.addEventListener('click', () => {
+      currentPage++;
+      const selectedCountry = locationSelect.value;
+      const adults = adultsInput.value;
+      fetchHotels(selectedCountry, adults, currentPage);
+    });
+    pagination.appendChild(nextButton);
+  }
+}
 });
 
 // Functions for slider navigation
@@ -143,3 +175,4 @@ function prevSlide(hotelCode) {
   slides[prevIndex].classList.remove('hidden');
   slides[prevIndex].classList.add('active');  // Set the previous slide as active
 }
+
