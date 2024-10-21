@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const { countryCode, adults } = req.query;  // Only capture countryCode and adults
+  const { countryCode, adults, page } = req.query;  // Only capture countryCode and adults
 
   let apiUrl;
 
