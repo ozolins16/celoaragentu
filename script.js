@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <h2>${hotel.name}</h2>
         <p>Location: ${hotel.city}, ${hotel.country}</p>
         <p>Stars: ${hotel.stars}</p>
-        <p>Price: ${hotel.price} €</p>  <!-- Display price -->
+        <p>Price: ${hotel.top_hit.price} €</p>  <!-- Display price -->
         <p>Total Price (All Travelers): ${hotel.top_hit.price_all} €</p>  <!-- Display total price -->
         <div class="slider-container">
           <div class="slider" id="slider-${hotel.hotelCode}">
