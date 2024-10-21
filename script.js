@@ -4,12 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   const hotelsContainer = document.getElementById('hotels-container');
   const adultsInput = document.getElementById('adults');
-  const pagination = document.getElementById('pagination');
-
-  let currentPage = 1;  // Initialize current page
 
   // Fetch country data from the backend API (fetches list of destinations)
-  fetch('/api/fetch-hotels')
+  fetch('/api/fetch-hotels')  // This will fetch `list-destinations-tab` since no countryCode is provided
     .then(response => response.json())
     .then(data => populateCountryOptions(data))
     .catch(error => {
@@ -32,12 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Add event listener for the Search button
   searchButton.addEventListener('click', () => {
-    currentPage = 1;  // Reset to page 1 on new search
-    fetchHotels(currentPage);
-  });
-
-  // Function to fetch hotels with the current page
-  function fetchHotels(page) {
     const selectedCountry = locationSelect.value;
     const adults = adultsInput.value;
 
@@ -45,24 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const queryParams = new URLSearchParams();
     if (selectedCountry) queryParams.append('countryCode', selectedCountry);
     if (adults) queryParams.append('adults', adults);
-    if (page) queryParams.append('page', page);
 
     // Make the API request with the constructed query string
     fetch(`/api/fetch-hotels?${queryParams.toString()}`)
       .then(response => response.json())
-      .then(data => {
-        displayHotels(data.hotels);  // Adjust based on actual API response
-        setupPagination(data.pager);  // Handle pagination
-      })
+      .then(data => displayHotels(data.hotels))  // Adjust based on actual API response
       .catch(error => {
         results.textContent = `Error fetching hotels: ${error.message}`;
       });
-  }
+  });
 
   // Function to display hotels with image slider
   function displayHotels(hotels) {
     hotelsContainer.innerHTML = '';  // Clear previous results
-
+  
     hotels.forEach(hotel => {
       const hotelDiv = document.createElement('div');
       hotelDiv.className = 'hotel';
@@ -70,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <h2>${hotel.name}</h2>
         <p>Location: ${hotel.city}, ${hotel.country}</p>
         <p>Stars: ${hotel.stars}</p>
+        <p>Price: ${hotel.price} €</p>  <!-- Display price -->
+        <p>Total Price (All Travelers): ${hotel.price_all} €</p>  <!-- Display total price -->
         <div class="slider-container">
           <div class="slider" id="slider-${hotel.hotelCode}">
             <!-- Images will be appended here -->
@@ -78,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="next" data-hotel="${hotel.hotelCode}">Next</button>
         </div>
       `;
+  
       
       // Loop through the hotel.media array to create image slides
       if (hotel.media && hotel.media.length > 0) {
@@ -95,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
           slider.appendChild(img);
         });
       }
-
+      
       hotelsContainer.appendChild(hotelDiv);
     });
 
@@ -114,31 +104,64 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-
-  // Function to set up pagination
   function setupPagination(pager) {
+    const pagination = document.getElementById('pages');
     pagination.innerHTML = '';  // Clear previous pagination controls
-
-    // "Previous" button
-    if (pager.page > 1) {
-      const prevButton = document.createElement('button');
-      prevButton.textContent = 'Previous';
-      prevButton.addEventListener('click', () => {
-        currentPage--;
-        fetchHotels(currentPage);
+  
+    // Create buttons for each page
+    for (let i = 1; i <= pager.total_pages; i++) {
+      const pageButton = document.createElement('button');
+      pageButton.textContent = `Page ${i}`;
+      
+      // Add event listener to each page button
+      pageButton.addEventListener('click', () => {
+        fetchHotels(i);  // Fetch the corresponding page when clicked
       });
-      pagination.appendChild(prevButton);
-    }
-
-    // "Next" button
-    if (pager.page < pager.total_pages) {
-      const nextButton = document.createElement('button');
-      nextButton.textContent = 'Next';
-      nextButton.addEventListener('click', () => {
-        currentPage++;
-        fetchHotels(currentPage);
-      });
-      pagination.appendChild(nextButton);
+  
+      // Append each button to the pagination container
+      pagination.appendChild(pageButton);
     }
   }
+  
 });
+
+// Functions for slider navigation
+function nextSlide(hotelCode) {
+  const slider = document.getElementById(`slider-${hotelCode}`);
+  const slides = slider.getElementsByClassName('slide');
+  let currentIndex = 0;
+
+  // Find the active slide
+  Array.from(slides).forEach((slide, index) => {
+    if (slide.classList.contains('active')) {
+      currentIndex = index;
+      slide.classList.remove('active');
+      slide.classList.add('hidden');  // Hide the current active slide
+    }
+  });
+
+  // Show the next slide, loop back to the first slide if at the end
+  const nextIndex = (currentIndex + 1) % slides.length;
+  slides[nextIndex].classList.remove('hidden');
+  slides[nextIndex].classList.add('active');  // Set the next slide as active
+}
+
+function prevSlide(hotelCode) {
+  const slider = document.getElementById(`slider-${hotelCode}`);
+  const slides = slider.getElementsByClassName('slide');
+  let currentIndex = 0;
+
+  // Find the active slide
+  Array.from(slides).forEach((slide, index) => {
+    if (slide.classList.contains('active')) {
+      currentIndex = index;
+      slide.classList.remove('active');
+      slide.classList.add('hidden');  // Hide the current active slide
+    }
+  });
+
+  // Show the previous slide, loop back to the last slide if at the start
+  const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+  slides[prevIndex].classList.remove('hidden');
+  slides[prevIndex].classList.add('active');  // Set the previous slide as active
+}
